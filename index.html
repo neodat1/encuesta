@@ -2,24 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Encuesta</title>
 </head>
 <body>
     <h1>Encuesta: ¿Cuál es tu lenguaje de programación favorito?</h1>
     <form id="survey-form">
-        <label>
-            <input type="radio" name="language" value="Python" required> Python
-        </label><br>
-        <label>
-            <input type="radio" name="language" value="JavaScript"> JavaScript
-        </label><br>
-        <label>
-            <input type="radio" name="language" value="Java"> Java
-        </label><br>
-        <label>
-            <input type="radio" name="language" value="Otros"> Otros
-        </label><br><br>
+        <label><input type="radio" name="language" value="Python" required> Python</label><br>
+        <label><input type="radio" name="language" value="JavaScript"> JavaScript</label><br>
+        <label><input type="radio" name="language" value="Java"> Java</label><br>
+        <label><input type="radio" name="language" value="Otros"> Otros</label><br><br>
         <button type="submit">Enviar</button>
     </form>
     <p id="result"></p>
@@ -30,23 +21,14 @@
             const formData = new FormData(e.target);
             const selected = formData.get("language");
 
-            const backendUrl = "http://localhost:3000/submit-survey";
-
-            fetch(backendUrl, { 
+            fetch("http://localhost:8080/kettle/encuesta", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ language: selected })
             })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("result").textContent = data;
-            })
-            .catch(err => {
-                document.getElementById("result").textContent = "Error al enviar la respuesta.";
-                console.error(err);
-            });
+            .then(res => res.ok ? res.text() : Promise.reject("Error"))
+            .then(data => document.getElementById("result").textContent = "Respuesta enviada.")
+            .catch(() => document.getElementById("result").textContent = "Error al enviar la respuesta.");
         });
     </script>
 </body>
